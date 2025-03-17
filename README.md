@@ -11,6 +11,18 @@ A React-based Optical Character Recognition (OCR) application that supports both
 - Image preview before processing
 - Clean and intuitive user interface
 
+## Sample Results
+
+### Sample 1: Passport Data
+![Passport Sample](samples/passport.jpg)
+*Sample passport image showing bilingual text recognition capabilities*
+
+### Sample 2: Bangla Text
+![Bangla Text Sample](samples/text.png)
+*Sample Bangla text document demonstrating native language processing*
+
+*Note: All sample images used in this documentation are collected from Google Images and are used for demonstration purposes only.*
+
 ## Accuracy Notes
 
 Tesseract OCR's accuracy varies depending on several factors:
@@ -29,18 +41,6 @@ For best results:
 - Ensure text has good contrast with background
 - Avoid skewed or rotated text
 - Use high-resolution images
-
-## Sample Results
-
-### Sample 1: Passport Data
-![Passport Sample](samples/passport.jpg)
-*Sample passport image showing bilingual text recognition capabilities*
-
-### Sample 2: Bangla Text
-![Bangla Text Sample](samples/text.png)
-*Sample Bangla text document demonstrating native language processing*
-
-*Note: All sample images used in this documentation are collected from Google Images and are used for demonstration purposes only.*
 
 ## Technologies Used
 
