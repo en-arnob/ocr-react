@@ -8,10 +8,18 @@ function MultiLangOCR() {
     const [confidence, setConfidence] = useState(null);
     const [selectedLang, setSelectedLang] = useState("ben+eng");
     const [selectedFile, setSelectedFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     const handleImageSelect = (event) => {
         const file = event.target.files[0];
         setSelectedFile(file);
+        
+        if (file) {
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreview(previewUrl);
+        } else {
+            setImagePreview(null);
+        }
     };
 
     const handleSubmit = async () => {
@@ -31,11 +39,11 @@ function MultiLangOCR() {
                             setProgress(parseInt(m.progress * 100));
                         }
                     },
-                    tessedit_pageseg_mode: "1", // Automatic page segmentation
+                    tessedit_pageseg_mode: "1",
                     preserve_interword_spaces: "1",
-                    tessedit_char_blacklist: "©®™", // Remove unwanted characters
-                    tessedit_enable_doc_dict: "1", // Enable dictionary correction
-                    tessjs_create_hocr: "1", // Enable HOCR output
+                    tessedit_char_blacklist: "©®™",
+                    tessedit_enable_doc_dict: "1",
+                    tessjs_create_hocr: "1",
                 }
             );
 
@@ -53,7 +61,10 @@ function MultiLangOCR() {
         setSelectedFile(null);
         setText("");
         setConfidence(null);
-        // Reset file input
+        if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+            setImagePreview(null);
+        }
         const fileInput = document.querySelector('input[type="file"]');
         if (fileInput) fileInput.value = '';
     };
@@ -94,6 +105,11 @@ function MultiLangOCR() {
                     <span className="selected-file-name">
                         {selectedFile.name}
                     </span>
+                )}
+                {imagePreview && (
+                    <div className="image-preview">
+                        <img src={imagePreview} alt="Selected" />
+                    </div>
                 )}
                 <div className="action-buttons">
                     <button 
