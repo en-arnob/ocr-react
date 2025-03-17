@@ -54,3 +54,8 @@ For best results:
 2. Install dependencies:
 ```bash
 npm install
+
+npm run dev
+
+## Author
+en-arnob
