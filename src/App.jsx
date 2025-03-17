@@ -4,34 +4,127 @@ import Tesseract from "tesseract.js";
 function MultiLangOCR() {
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [confidence, setConfidence] = useState(null);
+    const [selectedLang, setSelectedLang] = useState("ben+eng");
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    const handleImageUpload = (event) => {
+    const handleImageSelect = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedFile) return;
         setLoading(true);
-        const image = event.target.files[0];
+        setProgress(0);
+        setText("");
+        setConfidence(null);
 
-        if (image) {
-            Tesseract.recognize(
-                image,
-                "ben+eng", // Use Bengali & English
+        try {
+            const result = await Tesseract.recognize(
+                selectedFile,
+                selectedLang,
                 {
-                    logger: (m) => console.log(m), // Show OCR progress
+                    logger: m => {
+                        if (m.status === "recognizing text") {
+                            setProgress(parseInt(m.progress * 100));
+                        }
+                    },
+                    tessedit_pageseg_mode: "1", // Automatic page segmentation
+                    preserve_interword_spaces: "1",
+                    tessedit_char_blacklist: "©®™", // Remove unwanted characters
+                    tessedit_enable_doc_dict: "1", // Enable dictionary correction
+                    tessjs_create_hocr: "1", // Enable HOCR output
                 }
-            )
-            .then(({ data: { text } }) => {
-                setText(text);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error("OCR Error:", err);
-                setLoading(false);
-            });
+            );
+
+            setText(result.data.text);
+            setConfidence(result.data.confidence);
+            setLoading(false);
+        } catch (err) {
+            console.error("OCR Error:", err);
+            setText("Error processing image. Please try again.");
+            setLoading(false);
         }
     };
 
+    const handleClear = () => {
+        setSelectedFile(null);
+        setText("");
+        setConfidence(null);
+        // Reset file input
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) fileInput.value = '';
+    };
+
     return (
-        <div>
-            <input type="file" onChange={handleImageUpload} />
-            {loading ? <p>Processing...</p> : <p>Extracted Text: {text}</p>}
+        <div className="ocr-container">
+            <div className="language-buttons">
+                <button 
+                    onClick={() => setSelectedLang("eng")}
+                    className={selectedLang === "eng" ? "active" : ""}
+                >
+                    English
+                </button>
+                <button 
+                    onClick={() => setSelectedLang("ben")}
+                    className={selectedLang === "ben" ? "active" : ""}
+                >
+                    Bangla
+                </button>
+                <button 
+                    onClick={() => setSelectedLang("ben+eng")}
+                    className={selectedLang === "ben+eng" ? "active" : ""}
+                >
+                    Bilingual
+                </button>
+            </div>
+
+            <div className="file-controls">
+                <label className="file-input-label">
+                    <input 
+                        type="file" 
+                        onChange={handleImageSelect}
+                        accept="image/*"
+                    />
+                    Choose Image
+                </label>
+                {selectedFile && (
+                    <span className="selected-file-name">
+                        {selectedFile.name}
+                    </span>
+                )}
+                <div className="action-buttons">
+                    <button 
+                        onClick={handleClear}
+                        className="clear-button"
+                        disabled={!selectedFile}
+                    >
+                        Clear
+                    </button>
+                    <button 
+                        onClick={handleSubmit}
+                        className="submit-button"
+                        disabled={!selectedFile || loading}
+                    >
+                        Submit
+                    </button>
+                </div>
+            </div>
+            {loading && (
+                <div className="progress">
+                    <p>Processing... {progress}%</p>
+                    <progress value={progress} max="100" />
+                </div>
+            )}
+            {!loading && text && (
+                <div className="result">
+                    <p>Confidence Score: {confidence?.toFixed(2)}%</p>
+                    <p>Extracted Text:</p>
+                    <div className="text-output">{text}</div>
+                </div>
+            )}
         </div>
     );
 }

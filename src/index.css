@@ -1,0 +1,87 @@
+.language-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.language-buttons button {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.language-buttons button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.file-controls {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: start;
+}
+
+.file-input-label {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.file-input-label:hover {
+    background-color: #0056b3;
+}
+
+.file-input-label input[type="file"] {
+    display: none;
+}
+
+.selected-file-name {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.clear-button, .submit-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+}
+
+.clear-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.submit-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.clear-button:disabled, .submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.clear-button:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #218838;
+}
